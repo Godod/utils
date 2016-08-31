@@ -2,6 +2,7 @@ import requests
 import json
 
 from decimal import Decimal as D
+from typing import Iterable, Any, Dict
 
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email, validate_ipv46_address
@@ -15,13 +16,13 @@ TIMEOUT = 5.00
 class IPIntelException(ValueError):
     """Raised error when a GetIPIntel query responds with an error."""
 
-    def __init__(self, message, *args):
+    def __init__(self, message: str, *args: Iterable[Any]):
         self.message = message
         super().__init__(message, *args)
 
 
 class IPIntel:
-    def __init__(self, email, ip, flag=None):
+    def __init__(self, email: str, ip: str, flag: str = None):
         """Params:
         :param email: A valid email address to contact
         :param ip: A valid IPv4 or IPv6 IP Address to query.
@@ -32,9 +33,8 @@ class IPIntel:
         self.flag = flag
         self.format = 'json'
 
-    def lookup(self):
+    def lookup(self) -> bool:
         """Attempts to determine if the given address is a possible proxy
-
 
         :return: True if the given address is a bad address, or exceeds
         the given probability
@@ -44,7 +44,7 @@ class IPIntel:
         url = self._build_url(params)
         return self._send_request(url)
 
-    def _send_request(self, url):
+    def _send_request(self, url: str) -> bool:
         try:
             response = requests.get(url, timeout=TIMEOUT)
         except (requests.HTTPError, requests.Timeout):
@@ -70,11 +70,11 @@ class IPIntel:
 
         raise IPIntelException('Unknown response', content)
 
-    def _build_params(self):
+    def _build_params(self) -> Dict[str, str]:
         return {'ip': self.ip, 'email': self.email, 'format': self.format,
                 'flag': self.flag}
 
-    def _build_url(self, params):
+    def _build_url(self, params: Dict[str, str]) -> str:
         url = '{}?ip={ip}&contact={email}&format={format}'
         url = url.format(IPINTEL_URL, **params)
 
