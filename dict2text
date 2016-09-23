@@ -1,0 +1,18 @@
+def dict2text(data):
+    result = []
+
+    for k, v in data.items():
+        value = v
+
+        if type(v) == dict:
+            value = dict2text(v)
+        elif type(v) == list:
+            value_list = []
+            for val in v:
+                value_list.append(dict2text(val))
+
+            value = '; '.join(value_list)
+
+        result.append('='.join([k, str(value)]))
+
+    return ', '.join(result)
