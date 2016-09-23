@@ -1,4 +1,8 @@
-def dict2text(data):
+def dict2text(data: Dict[str, Any]) -> str:
+    """Recursively convert dict to text.
+
+    Using `;`, `=` and `, ` to join key and value
+    """
     result = []
 
     for k, v in data.items():
