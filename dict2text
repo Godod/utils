@@ -1,7 +1,7 @@
-def dict2text(data: Dict[str, Any]) -> str:
+def dict2text(data: Dict[str, Any], recursion: bool = False) -> str:
     """Recursively convert dict to text.
 
-    Using `;`, `=` and `, ` to join key and value
+    Using `\n` and `:` to join key and value
     """
     result = []
 
@@ -11,12 +11,19 @@ def dict2text(data: Dict[str, Any]) -> str:
         if type(v) == dict:
             value = dict2text(v)
         elif type(v) == list:
+            value = '\n'
+
             value_list = []
             for val in v:
-                value_list.append(dict2text(val))
+                value_list.append(dict2text(val, True))
 
-            value = '; '.join(value_list)
+            value += '\n'.join(value_list)
 
-        result.append('='.join([k, str(value)]))
+        value = str(value)
 
-    return ', '.join(result)
+        if recursion:
+            k = '\t' + k
+
+        result.append(':'.join([k, value]))
+
+    return '\n'.join(result)
