@@ -5,12 +5,17 @@ def dict2text(data: Dict[str, Any], recursion: bool = False) -> str:
     """
     result = []
 
+    if not data or isinstance(data, str):
+        return data
+
     for k, v in data.items():
         value = v
 
         if type(v) == dict:
             value = dict2text(v)
         elif type(v) == list:
+            # reset value for list type
+            value = ''
             # first of all we need to go next line
             # after root element when it's not recursion
             if not recursion:
@@ -18,8 +23,7 @@ def dict2text(data: Dict[str, Any], recursion: bool = False) -> str:
 
             value_list = []
             for val in v:
-                if val:
-                    value_list.append(dict2text(val, True))
+                value_list.append(dict2text(val, True))
 
             value += '\n'.join(value_list)
 
