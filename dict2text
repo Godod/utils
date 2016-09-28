@@ -5,14 +5,20 @@ def dict2text(data: Dict[str, Any], recursion: bool = False) -> str:
     """
     result = []
 
+    # check if data is empty string
+    if not data:
+        return data
+
     for k, v in data.items():
         value = v
 
         if type(v) == dict:
             value = dict2text(v)
         elif type(v) == list:
+            # first of all we need to go next line
+            # after base line
             value = '\n'
-
+            
             value_list = []
             for val in v:
                 value_list.append(dict2text(val, True))
